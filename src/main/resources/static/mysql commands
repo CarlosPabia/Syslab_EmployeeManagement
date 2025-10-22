@@ -1,0 +1,39 @@
+mysql -h 127.0.0.1 -P 3307 -u root
+
+
+-- Create the database
+CREATE DATABASE IF NOT EXISTS emsdb
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE emsdb;
+
+-- Drop table if it already exists (for a clean start)
+DROP TABLE IF EXISTS employees;
+
+-- Create employees table
+CREATE TABLE employees (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    first_name   VARCHAR(100) NOT NULL,
+    last_name    VARCHAR(100) NOT NULL,
+    email        VARCHAR(150) NOT NULL UNIQUE,
+    department   VARCHAR(100),
+    salary       INT,
+    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_emp_name (first_name, last_name)
+);
+
+-- Insert sample employees
+INSERT INTO employees (first_name, last_name, email, department, salary) VALUES
+ ('Ada',       'Lovelace',   'ada@example.com',       'R&D',         120000),
+ ('Alan',      'Turing',     'alan@example.com',      'R&D',         130000),
+ ('Grace',     'Hopper',     'grace@example.com',     'Platform',    110000),
+ ('Katherine', 'Johnson',    'kjohnson@example.com',  'Analytics',   105000),
+ ('Linus',     'Torvalds',   'linus@example.com',     'Kernel',      150000),
+ ('Barbara',   'Liskov',     'bliskov@example.com',   'Architecture',125000);
+
+
+
+
+SELECT * FROM employees;
