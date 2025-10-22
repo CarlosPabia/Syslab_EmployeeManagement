@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .main { font-weight: bold; font-size: xx-large; background-color: tomato; }
+        .table { color: blue; background-color: yellow; }
+    </style>
+    <title>Countries</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h2>Add Countries Form</h2>
+    <div class="main">
+        <a href="/">Back</a>
+    </div>
+    <form action="/add-country" method="post">
+        <label for="name">Country name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="language">Country Language:</label><br>
+        <input type="text" id="language" name="language"><br><br>
+        <input type="submit" value="Submit"/>
+        <input type="reset" value="Reset"/>
+    </form>
+</body>
+</html>
