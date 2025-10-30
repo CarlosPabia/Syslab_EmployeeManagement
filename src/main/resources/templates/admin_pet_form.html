@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<section>
+  <h1>New Pet</h1>
+  <form th:action="@{/admin/pets/save}" method="post" th:object="${pet}">
+    <label>Name</label>
+    <input th:field="*{name}">
+    <label>Breed/Type</label>
+    <input th:field="*{breed}">
+    <label>Price</label>
+    <input name="priceStr" placeholder="e.g., 9999">
+    <label>Image URL</label>
+    <input th:field="*{imageUrl}">
+    <label>Category</label>
+    <select name="categoryId" required>
+      <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+    </select>
+    <button type="submit">Save</button>
+  </form>
+</section>
+</html>

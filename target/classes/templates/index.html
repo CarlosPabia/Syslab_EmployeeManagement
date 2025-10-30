@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<section>
+  <h1>Dashboard</h1>
+
+  <h2>Top 5 Pets Sold</h2>
+  <div class="grid">
+    <div class="card" th:each="p : ${topPets}">
+      <div class="squircle">
+        <img th:if="${p.imageUrl}" th:src="${p.imageUrl}" alt="pet">
+        <div th:if="${!p.imageUrl}">Image not shown</div>
+      </div>
+      <div class="meta">
+        <div th:text="${p.breed}">Breed</div>
+        <div th:text="'₱' + ${p.price}">Price</div>
+        <small th:text="'Sold: ' + ${p.soldCount}">Sold</small>
+      </div>
+      <form th:action="@{'/cart/add/pet/' + ${p.id}}" method="post">
+        <button>Add to Cart</button>
+      </form>
+    </div>
+  </div>
+
+  <section class="about-contact">
+    <div>
+      <h2>About Us</h2>
+      <p>We connect loving owners with healthy pets and essential supplies.</p>
+    </div>
+    <div>
+      <h2>Contact Us</h2>
+      <p>Email: hello@petstore.local · Phone: +63 900 000 0000</p>
+    </div>
+  </section>
+</section>
+</html>

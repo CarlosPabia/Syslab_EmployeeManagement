@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title} ?: 'PetStore'">PetStore</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="fragments/header :: body"></div>
+<main class="container" th:fragment="content">
+    <div th:insert="${content}"></div>
+</main>
+<div th:replace="fragments/footer :: body"></div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<section>
+  <h1 th:text="${category.name}">Category</h1>
+  <div class="grid">
+    <div class="card" th:each="p : ${pets}">
+      <div class="squircle">
+        <img th:if="${p.imageUrl}" th:src="${p.imageUrl}" alt="pet">
+        <div th:if="${!p.imageUrl}">Image not shown</div>
+      </div>
+      <div class="meta">
+        <div th:text="${p.breed}">Breed</div>
+        <div th:text="'₱' + ${p.price}">Price</div>
+      </div>
+      <form th:action="@{'/cart/add/pet/' + ${p.id}}" method="post">
+        <button>Add to Cart</button>
+      </form>
+    </div>
+  </div>
+</section>
+</html>

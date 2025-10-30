@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<section>
+  <h1>Admin Dashboard</h1>
+  <div class="stats">
+    <div class="stat">Pets: <span th:text="${petsCount}">0</span></div>
+    <div class="stat">Products: <span th:text="${productsCount}">0</span></div>
+    <div class="stat">Domestic Categories: <span th:text="${domesticCategories}">0</span></div>
+    <div class="stat">Exotic Categories: <span th:text="${exoticCategories}">0</span></div>
+  </div>
+  <a href="/admin/pets/new">Add Pet</a>
+</section>
+</html>

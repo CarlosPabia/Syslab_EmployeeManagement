@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<section>
+  <h1 th:text="${headline}">Categories</h1>
+  <div class="grid">
+    <a class="card category" th:each="c : ${categories}" th:href="@{'/category/' + ${c.id}}">
+      <div class="squircle">
+        <img th:if="${c.imageUrl}" th:src="${c.imageUrl}" alt="category">
+        <div th:if="${!c.imageUrl}">Image not shown</div>
+      </div>
+      <div class="meta">
+        <div th:text="${c.name}">Category</div>
+      </div>
+    </a>
+  </div>
+</section>
+</html>
