@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${category.name}">Pets</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="fragments/navbar :: nav"></div>
+<main class="container py-4">
+    <h2 th:text="${category.name}"></h2>
+    <div class="row g-3">
+        <div class="col-12 col-md-4" th:each="p : ${pets}">
+            <div class="card h-100 text-center">
+                <img th:if="${p.imageUrl != null}" th:src="${p.imageUrl}" class="card-img-top squared-circle">
+                <div th:if="${p.imageUrl == null}" class="p-4 text-muted">Image not shown</div>
+                <div class="card-body">
+                    <div class="fw-semibold" th:text="${p.breed}"></div>
+                    <div class="text-primary" th:text="${'₱' + #numbers.formatDecimal(p.price,0,'COMMA',2,'POINT')}"></div>
+                    <form th:action="@{|/cart/add/pet/${p.id}|}" method="post">
+                        <button class="btn btn-sm btn-primary mt-2" type="submit">Add to cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="fragments/footer :: foot"></div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

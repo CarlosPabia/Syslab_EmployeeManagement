@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+</head>
+<body class="container py-5">
+<h2>Admin Login</h2>
+<form method="post" action="/admin/login" class="mt-3">
+    <div class="mb-3"><label class="form-label">Username</label><input name="username" class="form-control" value="admin"></div>
+    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" value="admin123"></div>
+    <button class="btn btn-primary">Login</button>
+</form>
+</body>
+</html>

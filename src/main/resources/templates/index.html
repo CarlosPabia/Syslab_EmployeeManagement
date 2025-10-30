@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pet Store</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="fragments/navbar :: nav"></div>
+<main class="container py-4">
+    <h2 class="mb-3">Top 5 Pets Sold</h2>
+    <div class="row g-3">
+        <div class="col-6 col-md-4 col-lg-3" th:each="p : ${topPets}">
+            <div class="card h-100 text-center">
+                <img th:if="${p.imageUrl != null}" th:src="${p.imageUrl}" class="card-img-top squared-circle">
+                <div th:if="${p.imageUrl == null}" class="p-4 text-muted">Image not shown</div>
+                <div class="card-body">
+                    <div class="fw-semibold" th:text="${p.breed}"></div>
+                    <div class="text-primary" th:text="${'₱' + #numbers.formatDecimal(p.price,0,'COMMA',2,'POINT')}"></div>
+                    <div class="small text-muted" th:text="${'Sold: ' + p.soldCount}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="my-4">
+    <h3>About Us</h3>
+    <p th:text="${about}"></p>
+    <h3>Contact Us</h3>
+    <p th:text="${contact}"></p>
+    <div th:if="${msg}" class="alert alert-success mt-3" th:text="${msg}"></div>
+</main>
+<div th:replace="fragments/footer :: foot"></div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

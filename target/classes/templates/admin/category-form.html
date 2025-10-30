@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body class="container py-4">
+  <h2>Category</h2>
+  <form method="post" action="/admin/categories">
+    <input type="hidden" th:if="${category.id}" th:name="'id'" th:value="${category.id}">
+    <div class="mb-3"><label>Name</label><input class="form-control" name="name" th:value="${category.name}"></div>
+    <div class="mb-3"><label>Type</label>
+      <select class="form-select" name="type">
+        <option>DOMESTIC</option><option>EXOTIC</option>
+      </select>
+    </div>
+    <div class="mb-3"><label>Image URL</label><input class="form-control" name="imageUrl" th:value="${category.imageUrl}"></div>
+    <button class="btn btn-primary">Save</button>
+  </form>
+</body>
+</html>

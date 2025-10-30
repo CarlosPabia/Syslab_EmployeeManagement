@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cart</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="fragments/navbar :: nav"></div>
+<main class="container py-4">
+    <h2>Cart</h2>
+    <table class="table align-middle">
+        <thead><tr><th>Item</th><th>Type</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>
+        <tbody>
+        <tr th:each="i : ${items}">
+            <td>
+                <img th:if="${i.imageUrl != null}" th:src="${i.imageUrl}" class="thumb me-2 squared-circle">
+                <span th:text="${i.name}"></span>
+            </td>
+            <td th:text="${i.refType}"></td>
+            <td th:text="${'₱' + #numbers.formatDecimal(i.price,0,'COMMA',2,'POINT')}"></td>
+            <td th:text="${i.qty}"></td>
+            <td th:text="${'₱' + #numbers.formatDecimal(i.price * i.qty,0,'COMMA',2,'POINT')}"></td>
+            <td>
+                <form method="post" action="/cart/remove">
+                    <input type="hidden" name="key" th:value="${i.refType + '-' + i.refId}">
+                    <button class="btn btn-sm btn-outline-danger">Remove</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-between">
+        <div class="fs-5">Total: <span th:text="${'₱' + #numbers.formatDecimal(total,0,'COMMA',2,'POINT')}"></span></div>
+        <a class="btn btn-success" href="/checkout">Proceed to Checkout</a>
+    </div>
+</main>
+<div th:replace="fragments/footer :: foot"></div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="navbar navbar-expand-lg bg-light border-bottom" th:fragment="nav">
+    <div class="container">
+        <a class="navbar-brand" href="/">PetStore</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"></button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/domestic">Domestic</a></li>
+                <li class="nav-item"><a class="nav-link" href="/exotic">Exotic</a></li>
+                <li class="nav-item"><a class="nav-link" href="/toys">Toys</a></li>
+                <li class="nav-item"><a class="nav-link" href="/food">Food</a></li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="/cart">🛒 Cart</a></li>
+                <li class="nav-item"><a class="nav-link" href="/admin/login">Admin</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
