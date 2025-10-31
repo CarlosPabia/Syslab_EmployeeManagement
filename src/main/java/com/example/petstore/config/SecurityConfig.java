@@ -9,8 +9,32 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 
+// --- CHANGE #1 ---
+// Add these two new imports
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.nio.file.Paths;
+import java.nio.file.Path; // <-- THIS IS THE MISSING IMPORT// Add this import
+
 @Configuration
-public class SecurityConfig {
+// --- CHANGE #2 ---
+// Implement the WebMvcConfigurer interface
+public class SecurityConfig implements WebMvcConfigurer {
+
+    // --- CHANGE #3 ---
+    // Add this new method to configure the "live" resource folder
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // This is the external folder path from Step 1
+        String uploadDir = System.getProperty("user.home") + "/petstore-uploads/";
+        Path uploadPath = Paths.get(uploadDir);
+
+        // This maps the URL path "/uploads/**" to the physical directory
+        // The "file:" prefix is essential for serving from the file system.
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + uploadPath.toAbsolutePath() + "/");
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -20,7 +44,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/", "/domestic", "/exotic", "/category/**",
                                 "/toys", "/food", "/cart", "/cart/**", "/checkout",
-                                "/css/**", "/webjars/**", "/images/**"
+                                "/css/**", "/webjars/**", "/images/**",
+                                "/uploads/**" // <-- CHANGE #4: Also permit the new /uploads/ URL
                         ).permitAll()
                         .requestMatchers("/admin/login").permitAll()
                         .requestMatchers("/admin/**").authenticated()
