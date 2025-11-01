@@ -109,3 +109,6 @@ INSERT INTO product(id, name, type, price, image_url, stock) VALUES
  (4,'Premium Dog Kibble 1kg','FOOD', 450.00,'https://picsum.photos/seed/food1/300',50),
  (5,'Cat Tuna Pack','FOOD', 320.00,NULL,60),
  (6,'Bird Seed Mix','FOOD', 180.00,'https://picsum.photos/seed/food3/300',70);
+
+ALTER TABLE pet ADD COLUMN description TEXT;
+ALTER TABLE product ADD COLUMN description TEXT;

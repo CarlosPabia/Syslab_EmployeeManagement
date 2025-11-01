@@ -6,8 +6,11 @@
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
 </head>
 <body class="container py-4">
+    <div th:replace="~{fragments/admin-nav :: adminNav}"></div> 
 <h2>Products</h2>
 <a class="btn btn-sm btn-success mb-3" href="/admin/products/new">New Product</a>
+
+<div class="table-responsive">
 <table class="table">
     <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
     <tbody>
@@ -26,5 +29,6 @@
     </tr>
     </tbody>
 </table>
+</div>
 </body>
 </html>

@@ -19,6 +19,9 @@ public class Pet {
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
+@Column(columnDefinition = "TEXT")
+private String description;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getBreed() { return breed; }
@@ -35,4 +38,7 @@ public class Pet {
     public void setSoldCount(long soldCount) { this.soldCount = soldCount; }
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }

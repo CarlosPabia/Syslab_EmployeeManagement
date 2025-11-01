@@ -28,6 +28,20 @@ public class CartService {
 
     public void remove(String key){ items.remove(key); }
 
+public CartItem update(String key, int qty) {
+        if (qty <= 0) {
+            // Treat 0 or less as a remove
+            remove(key);
+            return null;
+        }
+        CartItem item = items.get(key);
+        if (item != null) {
+            item.setQty(qty);
+            return item;
+        }
+        return null;
+    }
+
     public void clear(){ items.clear(); }
 
     public BigDecimal total(){

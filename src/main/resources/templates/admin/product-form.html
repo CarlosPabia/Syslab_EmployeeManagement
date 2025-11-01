@@ -5,21 +5,47 @@
     <title>Product Form</title>
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
 </head>
-<body class="container py-4">
-<h2>Product</h2>
-<form method="post" action="/admin/products">
-    <input type="hidden" th:if="${product.id}" th:name="'id'" th:value="${product.id}">
-    <div class="mb-3"><label class="form-label">Name</label><input class="form-control" name="name" th:value="${product.name}"></div>
-    <div class="mb-3"><label class="form-label">Type</label>
-        <select class="form-select" name="type">
-            <option th:selected="${product.type == 'TOY'}">TOY</option>
-            <option th:selected="${product.type == 'FOOD'}">FOOD</option>
-        </select>
-    </div>
-    <div class="mb-3"><label class="form-label">Price</label><input class="form-control" name="price" th:value="${product.price}"></div>
-    <div class="mb-3"><label class="form-label">Image URL</label><input class="form-control" name="imageUrl" th:value="${product.imageUrl}"></div>
-    <div class="mb-3"><label class="form-label">Stock</label><input class="form-control" name="stock" th:value="${product.stock}"></div>
-    <button class="btn btn-primary">Save</button>
-</form>
+<body>
+<div th:replace="~{fragments/admin-nav :: adminNav}"></div>
+
+<div class="container py-4">
+    <h2>Product</h2>
+    <form method="post" action="/admin/products" enctype="multipart/form-data">
+        <input type="hidden" th:if="${product.id}" th:name="'id'" th:value="${product.id}">
+        
+        <div class="mb-3"><label class="form-label">Name</label>
+            <input class="form-control" name="name" th:value="${product.name}" required>
+        </div>
+        
+        <div class="mb-3"><label class="form-label">Type</label>
+            <select class="form-select" name="type" required>
+                <option value="TOY" th:selected="${product.type == T(com.example.petstore.model.ProductType).TOY}">TOY</option>
+                <option value="FOOD" th:selected="${product.type == T(com.example.petstore.model.ProductType).FOOD}">FOOD</option>
+            </select>
+        </div>
+        
+        <div class="mb-3"><label class="form-label">Price</label>
+            <input type="number" step="0.01" class="form-control" name="price" th:value="${product.price}" required>
+        </div>
+        
+        <div class="mb-3"><label class="form-label">Image URL</label>
+            <input class="form-control" name="imageUrl" th:value="${product.imageUrl}">
+        </div>
+
+        <div class="mb-3"><label class="form-label">Stock</label>
+            <input type="number" class="form-control" name="stock" th:value="${product.stock}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" rows="4" 
+                      th:text="${product.description}"></textarea>
+        </div>
+
+        <button class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

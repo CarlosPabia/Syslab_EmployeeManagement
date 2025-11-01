@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
 </head>
 <body class="container py-4">
+    <div th:replace="~{fragments/admin-nav :: adminNav}"></div>
 <h2>Category</h2>
 <form method="post" action="/admin/categories" enctype="multipart/form-data">
     <input type="hidden" th:if="${category.id}" name="id" th:value="${category.id}">

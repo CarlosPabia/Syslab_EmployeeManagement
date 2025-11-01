@@ -21,4 +21,11 @@ public class HomeController {
         model.addAttribute("contact", "Email hello@petstore.local · +63 900 000 0000");
         return "index";
     }
+
+    @GetMapping("/login")
+    public String redirectToAdminLogin() {
+        // This catches the redirect to /login and forwards
+        // the user to the correct /admin/login page.
+        return "redirect:/admin/login";
+    }
 }

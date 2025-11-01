@@ -37,28 +37,28 @@ public class SecurityConfig implements WebMvcConfigurer {
     /**
      * This method configures Spring Security (authentication, authorization, login, etc.)
      */
-    @Bean
+  @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // --- THIS IS THE FIX FOR THE 403 FORBIDDEN ERROR ---
-                .csrf(csrf -> csrf.disable()) // Disables CSRF protection
-                // ---------------------------------------------------
-
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/domestic", "/exotic", "/category/**",
                                 "/toys", "/food", "/cart", "/cart/**", "/checkout",
                                 "/css/**", "/webjars/**", "/images/**",
-                                "/uploads/**" // Allows viewing of uploaded images
+                                "/uploads/**",
+                                "/favicon.ico",
+                                "/search",
+                                "/cart/api/**"
                         ).permitAll()
                         .requestMatchers("/admin/login").permitAll()
-                        .requestMatchers("/admin/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                 )
                 .formLogin(form -> form
-                        .loginPage("/admin/login")           // GET login page
-                        .loginProcessingUrl("/admin/login")  // POST from the form goes here
-                        .defaultSuccessUrl("/admin", true)   // where to go after success
-                        .failureUrl("/admin/login?error")    // on failure
+                        .loginPage("/admin/login")
+                        .loginProcessingUrl("/admin/login")
+                        .defaultSuccessUrl("/admin", true)
+                        .failureUrl("/admin/login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -69,7 +69,6 @@ public class SecurityConfig implements WebMvcConfigurer {
 
         return http.build();
     }
-
     /**
      * This method creates the in-memory admin user.
      */

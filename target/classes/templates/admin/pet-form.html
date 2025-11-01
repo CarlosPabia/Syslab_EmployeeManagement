@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
 </head>
 <body class="container py-4">
+    <div th:replace="~{fragments/admin-nav :: adminNav}"></div>
 <h2>Pet</h2>
 <form method="post" action="/admin/pets">
     <input type="hidden" th:if="${pet.id}" th:name="'id'" th:value="${pet.id}">
@@ -15,6 +16,12 @@
     <div class="mb-3"><label class="form-label">Image URL</label><input class="form-control" name="imageUrl" th:value="${pet.imageUrl}"></div>
     <div class="mb-3"><label class="form-label">Stock</label><input class="form-control" name="stock" th:value="${pet.stock}"></div>
     <div class="mb-3"><label class="form-label">Sold Count</label><input class="form-control" name="soldCount" th:value="${pet.soldCount}"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" name="description" rows="4" 
+                  th:text="${pet.description}"></textarea>
+    </div>
     <div class="mb-3">
         <label class="form-label">Category</label>
         <select class="form-select" name="category.id">

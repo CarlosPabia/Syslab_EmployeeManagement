@@ -1,2 +1,23 @@
 .squared-circle { border-radius: 20%; object-fit: cover; aspect-ratio: 1/1; }
 .thumb { width: 48px; height: 48px; object-fit: cover; }
+.placeholder-img {
+    filter: grayscale(80%) brightness(110%);
+}
+
+/* Card hover effect */
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Button hover/focus effect */
+.btn-primary:hover, .btn-primary:focus {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease-in-out;
+}
+.btn-sm:hover, .btn-sm:focus {
+    transform: scale(1.03);
+    transition: all 0.2s ease-in-out;
+}
