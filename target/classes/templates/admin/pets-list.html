@@ -4,8 +4,11 @@
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Pets</title>
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="container py-4">
+<body>
+    <div th:replace="fragments/navbar :: nav"></div>
+    <div class="container py-4">
 <h2>Pets</h2>
 <a class="btn btn-sm btn-success mb-3" href="/admin/pets/new">New Pet</a>
 <table class="table">
@@ -25,6 +28,8 @@
         </td>
     </tr>
     </tbody>
-</table>
+</table></div>
+<div th:replace="fragments/footer :: foot"></div>
+
 </body>
 </html>

@@ -49,7 +49,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 "/", "/domestic", "/exotic", "/category/**",
                                 "/toys", "/food", "/cart", "/cart/**", "/checkout",
                                 "/css/**", "/webjars/**", "/images/**",
-                                "/uploads/**" // Allows viewing of uploaded images
+                                "/uploads/**","/fragments/**","/js**" // Allows viewing of uploaded images
                         ).permitAll()
                         .requestMatchers("/admin/login").permitAll()
                         .requestMatchers("/admin/**").authenticated()

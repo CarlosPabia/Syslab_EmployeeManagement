@@ -4,13 +4,51 @@
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="container py-4">
-<h2>Admin Dashboard</h2>
-<ul class="mt-3">
-    <li><a href="/admin/pets">Manage Pets</a></li>
-    <li><a href="/admin/products">Manage Products</a></li>
-    <li><a href="/admin/categories">Manage Categories</a></li>
-</ul>
+<body>
+  <!-- Navbar -->
+  <div th:replace="fragments/navbar :: nav"></div>
+
+  <main class="container py-4">
+    <h2 class="fw-bold mb-4">Admin Dashboard</h2>
+
+    <div class="row g-4">
+      <!-- Manage Pets Card -->
+      <div class="col-md-4">
+        <div class="card h-100 text-center">
+          <div class="card-body d-flex flex-column justify-content-center">
+            <h5 class="card-title fw-bold">Manage Pets</h5>
+            <p class="card-text text-muted">Add, edit, or remove pets from the system.</p>
+            <a href="/admin/pets" class="btn btn-primary mt-auto">Go to Pets</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manage Products Card -->
+      <div class="col-md-4">
+        <div class="card h-100 text-center">
+          <div class="card-body d-flex flex-column justify-content-center">
+            <h5 class="card-title fw-bold">Manage Products</h5>
+            <p class="card-text text-muted">Update product listings, prices, and stock.</p>
+            <a href="/admin/products" class="btn btn-primary mt-auto">Go to Products</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manage Categories Card -->
+      <div class="col-md-4">
+        <div class="card h-100 text-center">
+          <div class="card-body d-flex flex-column justify-content-center">
+            <h5 class="card-title fw-bold">Manage Categories</h5>
+            <p class="card-text text-muted">Organize pets and products by category.</p>
+            <a href="/admin/categories" class="btn btn-primary mt-auto">Go to Categories</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+<div th:replace="fragments/footer :: foot"></div>
+
 </body>
 </html>

@@ -4,8 +4,11 @@
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Categories</title>
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="container py-4">
+<body>
+    <div th:replace="fragments/navbar :: nav"></div>
+    <div class="container py-4">
 <h2>Categories</h2>
 <a class="btn btn-sm btn-success mb-3" href="/admin/categories/new">New Category</a>
 <table class="table align-middle">
@@ -27,6 +30,8 @@
         </td>
     </tr>
     </tbody>
-</table>
+</table></div>
+<div th:replace="fragments/footer :: foot"></div>
+
 </body>
 </html>
