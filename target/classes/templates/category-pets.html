@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${category.name}">Pets</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="fragments/navbar :: nav"></div>
+<main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" th:text="${category.name}"></h2>
+        <span class="badge bg-primary" id="resultsCount"></span>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="position-relative">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="form-control search-input" id="searchInput" placeholder="Search pets by breed..." onkeyup="filterItems()">
+        </div>
+    </div>
+
+    <!-- Filter & Sort Controls -->
+    <div class="filter-controls">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Sort By</label>
+                <select class="form-select filter-select" id="sortSelect" onchange="filterItems()">
+                    <option value="name">Name (A-Z)</option>
+                    <option value="name-desc">Name (Z-A)</option>
+                    <option value="price">Price (Low to High)</option>
+                    <option value="price-desc">Price (High to Low)</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Filter by Price</label>
+                <select class="form-select filter-select" id="priceFilter" onchange="filterItems()">
+                    <option value="">All Prices</option>
+                    <option value="0-5000">Under ₱5,000</option>
+                    <option value="5000-10000">₱5,000 - ₱10,000</option>
+                    <option value="10000-20000">₱10,000 - ₱20,000</option>
+                    <option value="20000-999999">Above ₱20,000</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-outline-secondary w-100" onclick="resetFilters()">Reset Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pets Grid -->
+    <div class="row g-4" id="petsContainer">
+        <div class="col-6 col-md-4 col-lg-3 pet-item" th:each="p : ${pets}" 
+             th:data-name="${p.breed}" 
+             th:data-price="${p.price}"
+             th:data-id="${p.id}"
+             th:data-image="${p.imageUrl ?: ''}">
+            <div class="card h-100 fade-in">
+                <div class="position-relative">
+                    <img th:if="${p.imageUrl != null}" th:src="${p.imageUrl}" class="card-img-top" alt="Pet Image">
+                    <div th:if="${p.imageUrl == null}" class="placeholder-image"></div>
+                    <div th:if="${p.stock == 0}" class="badge bg-danger position-absolute top-0 end-0 m-2">Out of Stock</div>
+                    <div th:if="${p.stock > 0 && p.stock < 5}" class="badge bg-warning position-absolute top-0 end-0 m-2">Low Stock</div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold" th:text="${p.breed}"></h5>
+                    <div class="text-primary fw-bold fs-5 mb-2" th:text="${'₱' + #numbers.formatDecimal(p.price,0,'COMMA',2,'POINT')}"></div>
+                    <div class="small text-muted mb-3">
+                        <span th:if="${p.stock > 0}" th:text="${'In Stock: ' + p.stock}"></span>
+                        <span th:if="${p.stock == 0}" class="text-danger">Out of Stock</span>
+                    </div>
+                    <div class="d-flex gap-2 mt-auto">
+                        <button class="btn btn-primary flex-fill" 
+                                th:data-id="${p.id}"
+                                data-type="PET"
+                                th:data-name="${p.breed}"
+                                th:data-price="${p.price}"
+                                th:data-image="${p.imageUrl ?: ''}"
+                                th:data-display="${p.displayName ?: ''}"
+                                onclick="viewDetailsFromButton(this)">
+                            View Details
+                        </button>
+                        <form th:if="${p.stock > 0}" th:action="@{|/cart/add/pet/${p.id}|}" method="post" class="flex-fill">
+                            <button class="btn btn-success w-100" type="submit">Adopt Now</button>
+                        </form>
+                        <button th:if="${p.stock == 0}" class="btn btn-secondary w-100" disabled>Out of Stock</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">🐾</div>
+        <h4>No pets found</h4>
+        <p>Try adjusting your search or filter criteria</p>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" id="paginationNav" style="display: none;">
+        <ul class="pagination justify-content-center" id="pagination">
+        </ul>
+    </nav>
+</main>
+
+<!-- View Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="detailsModalLabel">Pet Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <img id="modalImage" src="" alt="Pet Image" class="modal-image">
+                        <div id="modalPlaceholder" class="placeholder-image" style="display: none;"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 id="modalName" class="fw-bold mb-3"></h4>
+                        <div class="text-primary fw-bold fs-4 mb-3" id="modalPrice"></div>
+                        <p class="text-muted mb-4" id="modalDescription"></p>
+                        <div class="mb-4">
+                            <strong>Stock:</strong> <span id="modalStock"></span>
+                        </div>
+                        <form id="modalAddToCart" method="post">
+                            <button type="submit" class="btn btn-primary btn-lg w-100" id="modalAddBtn">Adopt Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: foot"></div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    let allPets = [];
+    let currentPage = 1;
+    const itemsPerPage = 12;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        const petItems = document.querySelectorAll('.pet-item');
+        allPets = Array.from(petItems).map(item => ({
+            element: item,
+            name: item.dataset.name.toLowerCase(),
+            price: parseFloat(item.dataset.price),
+            id: item.dataset.id,
+            image: item.dataset.image
+        }));
+        filterItems();
+    });
+
+    function filterItems() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const sortBy = document.getElementById('sortSelect').value;
+        const priceFilter = document.getElementById('priceFilter').value;
+
+        let filtered = allPets.filter(pet => {
+            const matchesSearch = pet.name.includes(searchTerm);
+            let matchesPrice = true;
+            
+            if (priceFilter) {
+                const [min, max] = priceFilter.split('-').map(Number);
+                matchesPrice = pet.price >= min && pet.price <= max;
+            }
+            
+            return matchesSearch && matchesPrice;
+        });
+
+        // Sort
+        filtered.sort((a, b) => {
+            switch(sortBy) {
+                case 'name':
+                    return a.name.localeCompare(b.name);
+                case 'name-desc':
+                    return b.name.localeCompare(a.name);
+                case 'price':
+                    return a.price - b.price;
+                case 'price-desc':
+                    return b.price - a.price;
+                default:
+                    return 0;
+            }
+        });
+
+        // Hide all first
+        allPets.forEach(pet => pet.element.style.display = 'none');
+        
+        // Show filtered
+        filtered.forEach(pet => pet.element.style.display = 'block');
+
+        // Update results count
+        document.getElementById('resultsCount').textContent = filtered.length + ' pets found';
+        
+        // Show/hide empty state
+        document.getElementById('emptyState').style.display = filtered.length === 0 ? 'block' : 'none';
+        
+        // Pagination
+        currentPage = 1;
+        paginate(filtered);
+    }
+
+    function paginate(items) {
+        const totalPages = Math.ceil(items.length / itemsPerPage);
+        const paginationNav = document.getElementById('paginationNav');
+        const pagination = document.getElementById('pagination');
+        
+        if (totalPages <= 1) {
+            paginationNav.style.display = 'none';
+            return;
+        }
+        
+        paginationNav.style.display = 'block';
+        pagination.innerHTML = '';
+        
+        // Previous button
+        const prevLi = document.createElement('li');
+        prevLi.className = 'page-item' + (currentPage === 1 ? ' disabled' : '');
+        prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
+        pagination.appendChild(prevLi);
+        
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement('li');
+            li.className = 'page-item' + (i === currentPage ? ' active' : '');
+            li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>`;
+            pagination.appendChild(li);
+        }
+        
+        // Next button
+        const nextLi = document.createElement('li');
+        nextLi.className = 'page-item' + (currentPage === totalPages ? ' disabled' : '');
+        nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
+        pagination.appendChild(nextLi);
+        
+        // Show items for current page
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        
+        items.forEach((item, index) => {
+            if (index >= start && index < end) {
+                item.element.style.display = 'block';
+            } else {
+                item.element.style.display = 'none';
+            }
+        });
+    }
+
+    function changePage(page) {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const sortBy = document.getElementById('sortSelect').value;
+        const priceFilter = document.getElementById('priceFilter').value;
+
+        let filtered = allPets.filter(pet => {
+            const matchesSearch = pet.name.includes(searchTerm);
+            let matchesPrice = true;
+            
+            if (priceFilter) {
+                const [min, max] = priceFilter.split('-').map(Number);
+                matchesPrice = pet.price >= min && pet.price <= max;
+            }
+            
+            return matchesSearch && matchesPrice;
+        });
+
+        filtered.sort((a, b) => {
+            switch(sortBy) {
+                case 'name':
+                    return a.name.localeCompare(b.name);
+                case 'name-desc':
+                    return b.name.localeCompare(a.name);
+                case 'price':
+                    return a.price - b.price;
+                case 'price-desc':
+                    return b.price - a.price;
+                default:
+                    return 0;
+            }
+        });
+
+        currentPage = page;
+        paginate(filtered);
+    }
+
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('sortSelect').value = 'name';
+        document.getElementById('priceFilter').value = '';
+        filterItems();
+    }
+
+    function viewDetailsFromButton(button) {
+        const id = button.dataset.id;
+        const type = button.dataset.type;
+        const name = button.dataset.name;
+        const price = button.dataset.price;
+        const imageUrl = button.dataset.image || '';
+        const displayName = button.dataset.display || '';
+        viewDetails(id, type, name, price, imageUrl, displayName);
+    }
+
+    function viewDetails(id, type, name, price, imageUrl, displayName) {
+        document.getElementById('detailsModalLabel').textContent = name;
+        document.getElementById('modalName').textContent = displayName || name;
+        document.getElementById('modalPrice').textContent = '₱' + parseFloat(price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('modalDescription').textContent = displayName ? 
+            `This beautiful ${name} is a wonderful companion ready for adoption. ${displayName}` : 
+            `This beautiful ${name} is a wonderful companion ready for adoption. Perfect for families looking for a loving pet to welcome into their home.`;
+        
+        const modalImage = document.getElementById('modalImage');
+        const modalPlaceholder = document.getElementById('modalPlaceholder');
+        
+        if (imageUrl) {
+            modalImage.src = imageUrl;
+            modalImage.style.display = 'block';
+            modalPlaceholder.style.display = 'none';
+        } else {
+            modalImage.style.display = 'none';
+            modalPlaceholder.style.display = 'block';
+        }
+        
+        const form = document.getElementById('modalAddToCart');
+        form.action = '/cart/add/pet/' + id;
+        
+        const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+        modal.show();
+    }
+</script>
+</body>
+</html>

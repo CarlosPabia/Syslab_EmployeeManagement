@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pet Store - Your Trusted Pet Companion</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="fragments/navbar :: nav"></div>
+<main class="container py-4">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <h1>🐾 Welcome to PetStore</h1>
+            <p>Your one-stop shop for pets, food, and accessories. Bringing joy to your home, one pet at a time!</p>
+            <div class="mt-4">
+                <a href="/domestic" class="btn btn-light btn-lg me-2">Browse Domestic Pets</a>
+                <a href="/exotic" class="btn btn-outline-light btn-lg">Explore Exotic Pets</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Pets Section -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">⭐ Most Popular Pets</h2>
+            <a href="/domestic" class="btn btn-outline-primary">View All</a>
+        </div>
+        <div class="row g-4" id="topPetsContainer">
+            <div class="col-6 col-md-4 col-lg-3" th:each="p : ${topPets}">
+                <div class="card h-100 fade-in">
+                    <div class="position-relative">
+                        <img th:if="${p.imageUrl != null}" th:src="${p.imageUrl}" class="card-img-top" alt="Pet Image">
+                        <div th:if="${p.imageUrl == null}" class="placeholder-image"></div>
+                        <span class="badge bg-success position-absolute top-0 end-0 m-2">Popular</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold" th:text="${p.breed}"></h5>
+                        <div class="text-primary fw-bold fs-5 mb-2" th:text="${'₱' + #numbers.formatDecimal(p.price,0,'COMMA',2,'POINT')}"></div>
+                        <div class="small text-muted mb-3" th:text="${'Adopted: ' + p.soldCount + ' times'}"></div>
+                        <button class="btn btn-primary mt-auto" 
+                                th:data-id="${p.id}"
+                                data-type="PET"
+                                th:data-name="${p.breed}"
+                                th:data-price="${p.price}"
+                                th:data-image="${p.imageUrl ?: ''}"
+                                onclick="viewDetailsFromButton(this)">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${topPets == null || topPets.isEmpty()}" class="col-12">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🐾</div>
+                    <h4>No pets available yet</h4>
+                    <p>Check back soon for our most popular pets!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About & Contact Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title fw-bold mb-3">📖 About Us</h3>
+                    <p class="card-text" th:text="${about}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title fw-bold mb-3">📞 Contact Us</h3>
+                    <p class="card-text mb-2" th:text="${contact}"></p>
+                    <div class="mt-3">
+                        <a href="mailto:hello@petstore.local" class="btn btn-outline-primary me-2">Email Us</a>
+                        <a href="tel:+639000000000" class="btn btn-outline-primary">Call Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="testimonials-section">
+        <h2 class="fw-bold text-center mb-4">💬 What Our Customers Say</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="mb-3">"Amazing experience! My new Golden Retriever is healthy and happy. The staff was very helpful and knowledgeable."</p>
+                    <strong>- Taylor Swift</strong>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="mb-3">"Great selection of pet food and toys. My cat loves everything I bought here. Highly recommended!"</p>
+                    <strong>- JENNIE</strong>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="mb-3">"Best pet store in town! They have everything we need for our exotic bird. Excellent service and quality products."</p>
+                    <strong>- Billi Eilish</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="mt-5 mb-4">
+        <h2 class="fw-bold text-center mb-4">❓ Frequently Asked Questions</h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">Q: Do you offer delivery services?</div>
+                    <div class="faq-answer">A: Yes, we offer delivery services for all products. Please contact us for delivery options and fees.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">Q: What is your return policy?</div>
+                    <div class="faq-answer">A: We offer a 7-day return policy for unopened products. For pets, please contact us directly to discuss options.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">Q: Do you provide health certificates for pets?</div>
+                    <div class="faq-answer">A: Yes, all pets come with health certificates and vaccination records. We ensure all pets are healthy before adoption.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">Q: Can I visit the store to see the pets?</div>
+                    <div class="faq-answer">A: Absolutely! We welcome visitors. Our store is open Monday to Saturday, 9 AM to 6 PM.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">Q: What payment methods do you accept?</div>
+                    <div class="faq-answer">A: We accept Cash, GCash, and Card payments. Online orders can be paid via GCash or Card.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${msg}" class="alert alert-success mt-3" th:text="${msg}"></div>
+</main>
+
+<!-- View Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="detailsModalLabel">Item Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <img id="modalImage" src="" alt="Item Image" class="modal-image">
+                        <div id="modalPlaceholder" class="placeholder-image" style="display: none;"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 id="modalName" class="fw-bold mb-3"></h4>
+                        <div class="text-primary fw-bold fs-4 mb-3" id="modalPrice"></div>
+                        <p class="text-muted mb-4" id="modalDescription">Ready to welcome this pet into your home? Complete the adoption process below!</p>
+                        <form id="modalAddToCart" method="post">
+                            <button type="submit" class="btn btn-primary btn-lg w-100" id="modalAddBtnPet">Adopt Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: foot"></div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleFaq(element) {
+        element.classList.toggle('active');
+    }
+
+    function viewDetailsFromButton(button) {
+        const id = button.dataset.id;
+        const type = button.dataset.type;
+        const name = button.dataset.name;
+        const price = button.dataset.price;
+        const imageUrl = button.dataset.image || '';
+        viewDetails(id, type, name, price, imageUrl);
+    }
+
+    function viewDetails(id, type, name, price, imageUrl) {
+        document.getElementById('detailsModalLabel').textContent = name;
+        document.getElementById('modalName').textContent = name;
+        document.getElementById('modalPrice').textContent = '₱' + parseFloat(price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        
+        const modalDescription = document.getElementById('modalDescription');
+        const modalImage = document.getElementById('modalImage');
+        const modalPlaceholder = document.getElementById('modalPlaceholder');
+        
+        if (imageUrl) {
+            modalImage.src = imageUrl;
+            modalImage.style.display = 'block';
+            modalPlaceholder.style.display = 'none';
+        } else {
+            modalImage.style.display = 'none';
+            modalPlaceholder.style.display = 'block';
+        }
+        
+        const form = document.getElementById('modalAddToCart');
+        const modalBtn = document.getElementById('modalAddBtnPet');
+        if (type === 'PET') {
+            form.action = '/cart/add/pet/' + id;
+            if (modalBtn) modalBtn.textContent = 'Adopt Now';
+            if (modalDescription) modalDescription.textContent = 'Ready to welcome this pet into your home? Complete the adoption process below!';
+        } else {
+            form.action = '/cart/add/product/' + id;
+            if (modalBtn) modalBtn.textContent = 'Add to Cart';
+            if (modalDescription) modalDescription.textContent = 'This is a premium item from our collection. Quality guaranteed!';
+        }
+        
+        const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+        modal.show();
+    }
+</script>
+</body>
+</html>

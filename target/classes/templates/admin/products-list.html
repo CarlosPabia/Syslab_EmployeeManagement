@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Products</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+</head>
+<body class="container py-4">
+<h2>Products</h2>
+<a class="btn btn-sm btn-success mb-3" href="/admin/products/new">New Product</a>
+<table class="table">
+    <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+    <tbody>
+    <tr th:each="p : ${products}">
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.name}"></td>
+        <td th:text="${p.type}"></td>
+        <td th:text="${p.price}"></td>
+        <td th:text="${p.stock}"></td>
+        <td>
+            <a th:href="@{|/admin/products/${p.id}/edit|}" class="btn btn-sm btn-primary">Edit</a>
+            <form th:action="@{|/admin/products/${p.id}/delete|}" method="post" style="display:inline-block">
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

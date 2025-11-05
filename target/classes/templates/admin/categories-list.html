@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Categories</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+</head>
+<body class="container py-4">
+<h2>Categories</h2>
+<a class="btn btn-sm btn-success mb-3" href="/admin/categories/new">New Category</a>
+<table class="table align-middle">
+    <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Image</th><th>Actions</th></tr></thead>
+    <tbody>
+    <tr th:each="c : ${categories}">
+        <td th:text="${c.id}"></td>
+        <td th:text="${c.name}"></td>
+        <td th:text="${c.type}"></td>
+        <td>
+            <img th:if="${c.imageUrl}" th:src="${c.imageUrl}" style="width:48px;height:48px;object-fit:cover;border-radius:12px">
+            <span th:if="${c.imageUrl == null}" class="text-muted">Image not shown</span>
+        </td>
+        <td>
+            <a th:href="@{|/admin/categories/${c.id}/edit|}" class="btn btn-sm btn-primary">Edit</a>
+            <form th:action="@{|/admin/categories/${c.id}/delete|}" method="post" style="display:inline-block">
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

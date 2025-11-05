@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Exotic Pets - Unique Companions</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="fragments/navbar :: nav"></div>
+<main class="container py-4">
+    <div class="mb-4">
+        <h2 class="fw-bold">🦎 Exotic Pets</h2>
+        <p class="text-muted">Explore our collection of unique and exotic pets for experienced pet owners.</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="position-relative">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="form-control search-input" id="searchInput" placeholder="Search categories..." onkeyup="filterItems()">
+        </div>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="row g-4" id="categoriesContainer">
+        <div class="col-6 col-md-4 col-lg-3 category-item" th:each="c : ${categories}" 
+             th:data-name="${c.name}">
+            <a th:href="@{|/category/${c.id}|}" class="text-decoration-none">
+                <div class="card h-100 fade-in">
+                    <div class="position-relative">
+                        <img th:if="${c.imageUrl != null}" th:src="${c.imageUrl}" class="card-img-top" alt="Category Image">
+                        <div th:if="${c.imageUrl == null}" class="placeholder-image"></div>
+                        <div class="badge bg-warning position-absolute top-0 start-0 m-2">Exotic</div>
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold" th:text="${c.name}"></h5>
+                        <p class="text-muted small mb-0">Click to explore</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">🦎</div>
+        <h4>No categories found</h4>
+        <p>Try adjusting your search</p>
+    </div>
+</main>
+
+<div th:replace="fragments/footer :: foot"></div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    let allCategories = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryItems = document.querySelectorAll('.category-item');
+        allCategories = Array.from(categoryItems).map(item => ({
+            element: item,
+            name: item.dataset.name.toLowerCase()
+        }));
+    });
+
+    function filterItems() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        
+        let filtered = allCategories.filter(category => {
+            return category.name.includes(searchTerm);
+        });
+
+        allCategories.forEach(category => category.element.style.display = 'none');
+        filtered.forEach(category => category.element.style.display = 'block');
+
+        document.getElementById('emptyState').style.display = filtered.length === 0 ? 'block' : 'none';
+    }
+</script>
+</body>
+</html>

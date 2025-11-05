@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout - PetStore</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="fragments/navbar :: nav"></div>
+<main class="container py-4">
+    <h2 class="fw-bold mb-4">💳 Complete Adoption & Purchase</h2>
+    
+    <div class="row g-4">
+        <!-- Checkout Form -->
+        <div class="col-lg-8">
+            <div class="card checkout-form">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-4">Shipping Information</h4>
+                    <form method="post" id="checkoutForm" onsubmit="return validateForm()">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="name">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" id="name" class="form-control" required 
+                                       placeholder="Enter your full name" onblur="validateField(this)">
+                                <div class="invalid-feedback">Please provide your full name.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="email">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" name="email" id="email" class="form-control" required 
+                                       placeholder="your.email@example.com" onblur="validateField(this)">
+                                <div class="invalid-feedback">Please provide a valid email address.</div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="address">Delivery Address <span class="text-danger">*</span></label>
+                                <textarea name="address" id="address" class="form-control" rows="3" required 
+                                          placeholder="Enter your complete delivery address" onblur="validateField(this)"></textarea>
+                                <div class="invalid-feedback">Please provide your delivery address.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="phone">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" name="phone" id="phone" class="form-control" required 
+                                       placeholder="+63 900 000 0000" pattern="[0-9+\s-]+" onblur="validateField(this)">
+                                <div class="invalid-feedback">Please provide a valid phone number.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="paymentMethod">Payment Method <span class="text-danger">*</span></label>
+                                <select name="paymentMethod" id="paymentMethod" class="form-select" required onchange="validateField(this)">
+                                    <option value="">Select payment method</option>
+                                    <option value="Cash">Cash on Delivery</option>
+                                    <option value="GCash">GCash</option>
+                                    <option value="Card">Credit/Debit Card</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a payment method.</div>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <span id="submitBtnText">Complete Adoption & Purchase</span>
+                                    <span id="submitBtnSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;" role="status"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-3">Order Summary</h5>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span th:text="${'₱' + #numbers.formatDecimal(total,0,'COMMA',2,'POINT')}"></span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold">Total:</span>
+                            <span class="fw-bold text-primary fs-5" th:text="${'₱' + #numbers.formatDecimal(total,0,'COMMA',2,'POINT')}"></span>
+                        </div>
+                    </div>
+                    <div class="alert alert-info small">
+                        <strong>💡 Note:</strong> You will receive a confirmation email once your adoption and order are processed.
+                    </div>
+                    <a href="/cart" class="btn btn-outline-secondary w-100">← Back to Cart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments/footer :: foot"></div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    function validateField(field) {
+        const value = field.value.trim();
+        const isValid = field.checkValidity();
+        
+        if (isValid && value) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        } else {
+            field.classList.remove('is-valid');
+            if (field.type === 'email' && value && !isValid) {
+                field.classList.add('is-invalid');
+            } else if (!value && field.required) {
+                field.classList.add('is-invalid');
+            }
+        }
+    }
+
+    function validateForm() {
+        const form = document.getElementById('checkoutForm');
+        const fields = form.querySelectorAll('input[required], select[required], textarea[required]');
+        let isValid = true;
+
+        fields.forEach(field => {
+            validateField(field);
+            if (!field.checkValidity()) {
+                isValid = false;
+            }
+        });
+
+        if (isValid) {
+            // Show loading spinner
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const submitBtnText = document.getElementById('submitBtnText');
+            const submitBtnSpinner = document.getElementById('submitBtnSpinner');
+            
+            submitBtn.disabled = true;
+            submitBtnText.textContent = 'Processing...';
+            submitBtnSpinner.style.display = 'inline-block';
+        }
+
+        return isValid;
+    }
+
+    // Real-time validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('checkoutForm');
+        const inputs = form.querySelectorAll('input, select, textarea');
+        
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                validateField(this);
+            });
+            
+            input.addEventListener('input', function() {
+                if (this.classList.contains('is-invalid') && this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Category Form</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+</head>
+<body class="container py-4">
+<h2>Category</h2>
+<form method="post" action="/admin/categories" enctype="multipart/form-data">
+    <input type="hidden" th:if="${category.id}" name="id" th:value="${category.id}">
+    <div class="mb-3"><label class="form-label">Name</label>
+        <input class="form-control" name="name" th:value="${category.name}" required>
+    </div>
+    <div class="mb-3"><label class="form-label">Type</label>
+        <select class="form-select" name="type" required>
+            <option value="DOMESTIC" th:selected="${category.type == T(com.example.petstore.model.CategoryType).DOMESTIC}">DOMESTIC</option>
+            <option value="EXOTIC" th:selected="${category.type == T(com.example.petstore.model.CategoryType).EXOTIC}">EXOTIC</option>
+        </select>
+    </div>
+    <div class="mb-3"><label class="form-label">Image URL (optional)</label>
+        <input class="form-control" name="imageUrl" th:value="${category.imageUrl}">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Or Upload Image (max 5 MB)</label>
+        <input class="form-control" type="file" name="imageFile" accept="image/*">
+        <div class="form-text">If both URL and file are provided, uploaded file wins.</div>
+    </div>
+    <div class="mb-3" th:if="${category.imageUrl}">
+        <label class="form-label">Current Image</label><br>
+        <img th:src="${category.imageUrl}" style="max-width:160px;border-radius:16px">
+    </div>
+    <button class="btn btn-primary">Save</button>
+</form>
+</body>
+</html>
